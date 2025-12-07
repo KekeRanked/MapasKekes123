@@ -1,0 +1,167 @@
+<map proto="1.4.0">
+<name>Golden Drought V</name>
+<version>1.1.2</version>
+<objective>Capture the enemy wool!</objective>
+<time result="objectives" max-overtime="10m" overtime="10m">25m</time>
+<authors>
+    <author uuid="459fd919-0d58-401a-9601-6cab1eb721ab"/> <!-- Reshif -->
+</authors>
+<teams>
+    <team id="blue-team" color="blue" max="5" max-overfill="5">Blue</team>
+    <team id="red-team" color="dark red" max="5" max-overfill="5">Red</team>
+</teams>
+<kits>
+    <kit id="default-kit">
+        <effect>night vision</effect>
+    </kit>
+    <kit id="spawn-kit">
+        <clear/>
+        <item slot="0" unbreakable="true" show-unbreakable="false" material="iron sword"/>
+        <item slot="1" unbreakable="true" show-unbreakable="false" material="bow"/>
+        <item slot="28" amount="40" material="arrow"/>
+        <item slot="2" unbreakable="true" show-unbreakable="false" material="iron pickaxe">
+            <enchantment>efficiency</enchantment>
+        </item>
+        <item slot="3" unbreakable="true" show-unbreakable="false" material="iron axe"/>
+        <item slot="4" amount="64" material="sandstone"/>
+        <item slot="5" amount="24" damage="2" material="wood"/>
+        <item slot="6" amount="64" material="sandstone"/>
+        <item slot="7" material="golden apple"/>
+        <effect duration="5" amplifier="3">heal</effect>
+        <effect duration="5" amplifier="3">damage resistance</effect>
+    </kit>
+    <kit id="blue-kit" parents="spawn-kit">
+        <helmet unbreakable="true" color="334CB2" material="leather helmet"/>
+        <chestplate unbreakable="true" color="334CB2" material="leather chestplate">
+            <enchantment>projectile_protection</enchantment>
+        </chestplate>
+    </kit>
+    <kit id="red-kit" parents="spawn-kit">
+        <helmet unbreakable="true" color="993333" material="leather helmet"/>
+        <chestplate unbreakable="true" color="993333" material="leather chestplate">
+            <enchantment>projectile_protection</enchantment>
+        </chestplate>
+    </kit>
+</kits>
+<spawns>
+    <default kit="default-kit">
+        <region yaw="0">
+            <point>36.5,14,-1277.5</point>
+        </region>
+    </default>
+    <spawn team="blue-team" kit="blue-kit">
+        <region yaw="90">
+            <point>116,4,-1281</point>
+        </region>
+    </spawn>
+    <spawn team="red-team" kit="red-kit">
+        <region yaw="-90">
+            <point>-43,4,-1274</point>
+        </region>
+    </spawn>
+</spawns>
+<filters>
+    <not id="blue-in-wr">
+        <any>
+            <team id="only-red">red-team</team>
+            <material>chest</material>
+        </any>
+    </not>
+    <not id="red-in-wr">
+        <any>
+            <team id="only-blue">blue-team</team>
+            <material>chest</material>
+        </any>
+    </not>
+    <material id="only-iron">iron block</material>
+    <not id="deny-void">
+        <void/>
+    </not>
+</filters>
+<regions>
+    <union id="spawns">
+        <rectangle id="blue-spawn" min="105,-1289" max="121,-1273"/>
+        <rectangle id="red-spawn" min="-48,-1282" max="-32,-1266"/>
+    </union>
+    <union id="wool-rooms">
+        <rectangle id="purple-for-blue" min="-15,-1273" max="-6,-1264"/> <!-- Blue must get -->
+        <rectangle id="green-for-red" min="79,-1282" max="88,-1291"/> <!-- Red must get -->
+    </union>
+    <complement id="void">
+        <everywhere/>
+        <rectangle min="8,-1309" max="65,-1246"/>
+        <union id="wr-bridges">
+            <rectangle min="81,-1269" max="86,-1260"/> <!-- to wool on blue's side -->
+            <rectangle min="-13,-1295" max="-8,-1286"/> <!-- to wool on red's side -->
+        </union>
+    </complement>
+    <intersect id="under-bridges">
+        <region id="wr-bridges"/>
+        <below y="14"/>
+    </intersect>
+    <apply enter="only-blue" region="blue-spawn" message="You may not enter the enemy spawn!"/>
+    <apply enter="only-red" region="red-spawn" message="You may not enter the enemy spawn!"/>
+    <apply enter="only-blue" region="purple-for-blue" message="You may not enter your team's own wool room!"/>
+    <apply enter="only-red" region="green-for-red" message="You may not enter your team's own wool room!"/>
+    <apply block-break="only-iron" block-place="never" region="spawns" message="You may only break iron blocks in spawn!"/>
+    <apply block="blue-in-wr" use="only-blue" region="purple-for-blue"/>
+    <apply block="red-in-wr" use="only-red" region="green-for-red"/>
+    <apply block="never" region="under-bridges" message="You may not build in the void!"/>
+    <apply block="deny-void" region="void" message="You may not build in the void!"/>
+</regions>
+<wools wool-proximity-metric="none" monument-proximity-metric="closest block">
+    <wool team="blue-team" color="purple" location="-10.5,13.5,-1265.5">
+        <monument>
+            <block>106,5,-1281</block>
+        </monument>
+    </wool>
+    <wool team="red-team" color="green" location="83.5,13.5,-1289.5">
+        <monument>
+            <block>-34,5,-1275</block>
+        </monument>
+    </wool>
+</wools>
+<toolrepair>
+    <tool>iron sword</tool>
+    <tool>bow</tool>
+    <tool>iron pickaxe</tool>
+    <tool>iron axe</tool>
+</toolrepair>
+<itemremove>
+    <item>sandstone</item>
+    <item>wood</item>
+    <item>golden carrot</item>
+    <item>leather helmet</item>
+    <item>leather chestplate</item>
+</itemremove>
+<itemkeep>
+    <item>arrow</item>
+</itemkeep>
+<kill-reward>
+    <item amount="32" material="sandstone"/>
+    <item amount="12" damage="2" material="wood"/>
+    <item material="golden apple"/>
+    <item amount="10" material="arrow"/>
+</kill-reward>
+<maxbuildheight>20</maxbuildheight>
+<respawn delay="5s" auto="true" blackout="true"/>
+<crafting>
+    <disable>iron trapdoor</disable>
+    <disable>minecart</disable>
+    <disable>boat</disable>
+    <disable>bucket</disable>
+</crafting>
+<item-mods>
+    <rule>
+        <match>
+            <material>iron chestplate</material>
+        </match>
+        <modify>
+            <enchantment>projectile_protection</enchantment>
+        </modify>
+    </rule>
+</item-mods>
+<hunger>
+    <depletion>off</depletion>
+</hunger>
+</map>
